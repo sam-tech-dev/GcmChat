@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context="com.example.sattar.gcmchat.RegisterOnServer">
+
+
+
+
+    <EditText
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:layout_width="match_parent"
+        android:hint="Type name"
+        android:background="#c5d6d8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:textSize="18dp"
+        android:textColor="#000000"
+        android:id="@+id/name"
+
+        />
+
+
+    <EditText
+        android:layout_marginTop="10dp"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:layout_width="match_parent"
+        android:hint="Type your email"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#c5d6d8"
+        android:textSize="18dp"
+        android:textColor="#000000"
+        android:id="@+id/email"
+
+        />
+
+
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".4"
+
+        ></ListView>
+
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="5dp"
+        android:text="connect"
+        android:background="#006666"
+        android:textColor="#ffffff"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:id="@+id/register"
+        />
+
+
+
+</LinearLayout>
