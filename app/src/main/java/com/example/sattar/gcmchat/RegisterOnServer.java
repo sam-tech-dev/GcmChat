@@ -3,6 +3,7 @@ package com.example.sattar.gcmchat;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +25,9 @@ import java.net.URLEncoder;
 public class RegisterOnServer extends AppCompatActivity {
 
 
-    public EditText edName, edEmail;
+    public EditText edmobile;
     public Button btnRegister;
-    String name, email, regId;
+    String mobileno;
     Context context;
     String parameters = null;
     String token=null;
@@ -37,15 +38,14 @@ public class RegisterOnServer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_on_server);
 
-        final String serverUrl = "http://192.168.1.121/gcmServer/registration.php";
+        final String serverUrl =ServerUrls.registerUrl;
 
         context = this;
 
 
 
-        edName = (EditText) findViewById(R.id.name);
-        edEmail = (EditText) findViewById(R.id.email);
-        btnRegister = (Button) findViewById(R.id.register);
+        edmobile = (EditText) findViewById(R.id.mobile);
+        btnRegister = (Button) findViewById(R.id.registration);
 
         Intent intent=new Intent(this,registrationService.class);
         startService(intent);
@@ -57,11 +57,11 @@ public class RegisterOnServer extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name = edName.getText().toString();
-                email = edEmail.getText().toString();
+               mobileno  = edmobile.getText().toString().trim();
+
 
 try {
-   parameters = "regId=" + URLEncoder.encode(token, "UTF-8") + "&name=" + URLEncoder.encode(name, "UTF-8") + "&email=" + URLEncoder.encode(email, "UTF-8");
+   parameters = "regId=" + URLEncoder.encode(token, "UTF-8") + "&mobileno=" + URLEncoder.encode(mobileno, "UTF-8");
 
 }
                catch (UnsupportedEncodingException e){
@@ -69,6 +69,9 @@ try {
                 }
                 new CustomAsyncTask().execute(serverUrl);
 
+                Intent intent=new Intent(RegisterOnServer.this,MainActivity.class);
+                 startActivity(intent);
+                finish();
             }
         });
 
@@ -85,10 +88,8 @@ try {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
-            Toast.makeText(context, "onPreExecute", Toast.LENGTH_SHORT).show();
-
             progressDialog = new ProgressDialog(RegisterOnServer.this);
-            progressDialog.setMessage("inserting data...");
+            progressDialog.setMessage("Registering...");
             progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progressDialog.setProgress(1);
             progressDialog.setCancelable(false);
@@ -99,9 +100,7 @@ try {
         @Override
         protected String doInBackground(String... params) {
 
-
-            publishProgress(params[0]);
-            URL url = null;
+           URL url = null;
             try {
                 url = new URL(params[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -126,32 +125,37 @@ try {
             }
         }
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values[0]);
-            Toast.makeText(context, values[0], Toast.LENGTH_SHORT).show();
-        }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
 
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-            Log.d("sam", result);
+            if(result.equals("This number is already registered")){
+                Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+            }else{
+
+                if(result.equals("You have Successfully Registered")){
+                    Toast.makeText(context, "You has registered on server", Toast.LENGTH_SHORT).show();
+                   SharedPreferences sharedpreferences = context.getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor edit = sharedpreferences.edit();
+                    edit.putString("registerCheck","true");
+                    edit.putString("number",mobileno);
+                    edit.commit();
+                }else{
+                    Toast.makeText(context, "error 404", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+
         }
 
 
     }
-
-
-
-
-
 
 
 

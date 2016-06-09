@@ -2,9 +2,12 @@ package com.example.sattar.gcmchat;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmListenerService;
+
+import java.text.SimpleDateFormat;
+
+import static com.google.android.gms.internal.zzir.runOnUiThread;
 
 /**
  * Created by Sattar on 5/31/2016.
@@ -14,21 +17,68 @@ public class GCMListener  extends GcmListenerService {
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        Log.d("azad", "in listener");
 
-        Toast.makeText(getApplicationContext(),"in listener",Toast.LENGTH_LONG).show();
+        String   message = data.getString("message");
 
-        String message = data.getString("message");
-        String fm = data.getString("From");
-        Log.d("azad", "From: " + from);
+        String  number = data.getString("From").trim();
+
+
+        Log.d("azad", "From:" + from);
         Log.d("azad", "Message: " + message);
-        Log.d("azad", "Message: " + fm);
 
         if (from.startsWith("/topics/")) {
             // message received from some topic.
+            Log.d("azad", "Message2");
         } else {
             // normal downstream message.
         }
+
+        sendToDatabase(message,number);
+
+    }
+
+
+    void sendToDatabase(String message,String number){
+
+        String name="";
+        String dateString="";
+        String timeString="";
+        String type="";
+
+        long date = System.currentTimeMillis();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM");
+        dateString = sdf.format(date);
+
+        SimpleDateFormat stime = new SimpleDateFormat("h:mm a");
+        timeString = stime.format(date);
+
+        //  Toast.makeText(context, timeString, Toast.LENGTH_LONG).show();
+
+
+
+        name= new DataBase(getApplicationContext()).getContactName(getApplicationContext(),number);
+
+        if(name==null){
+            name="Unknown Person";
+        }
+
+        type="received";
+
+        new DataBase(getApplicationContext()).insertionrow(new DataBase(getApplicationContext()),name,number,dateString,timeString,message,type );
+
+
+       runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                IndividualChatDisp.update();
+                ChatFragment.updateFrontList();
+
+            }
+        });
+
+
 
 
     }

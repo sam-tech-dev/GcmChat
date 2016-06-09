@@ -16,7 +16,7 @@ public class registrationService extends IntentService {
        public registrationService(){
            super(TAG);
        }
-   static  String id;
+       static  String id;
 
 
     @Override

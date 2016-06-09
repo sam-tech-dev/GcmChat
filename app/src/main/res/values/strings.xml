@@ -1,13 +1,16 @@
 <resources>
-    <string name="app_name">" GCMChat"</string>
+    <string name="app_name">"GCMChat"</string>
     <string name="google_api_key">"AIzaSyDo9Wfh3Jo_GW-yS5ki7wEgTTfXtpFHLqg"</string>
-    <string name="dispensary">" Dispensary"</string>
-    <string name="aurobindo">" Aurobindo Hostel"</string>
-    <string name="Basketball">"Basketball Court"</string>
-    <string name="prabha">"Prabha Bhavan"</string>
     <string name="app">"SatChat"</string>
     <string name="hintname">"enter your name"</string>
     <string name="hintemail">"enter your email"</string>
     <string name="title_activity_get_location">getLocation</string>
+    <string name="title_activity_main">SatChat</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_individual_chat_disp">IndividualChatDisp</string>
 
 </resources>

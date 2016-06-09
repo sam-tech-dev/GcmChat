@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context="com.example.sattar.gcmchat.MainActivity" >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:background="@color/colorPrimary"
+        >
+
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="42dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/back"
+            android:id="@+id/backbutton"
+            android:layout_marginLeft="10dp"
+            />
+
+        <TextView
+            android:id="@+id/indname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.80"
+            android:gravity="center"
+            android:text="Individual"
+            android:textColor="#FFFFFF"
+            android:textSize="23dp" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/call"
+            android:id="@+id/phonecall"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/recycler_view"
+        android:layout_weight="0.98"
+        android:background="@drawable/bg_messages">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:weightSum="1"
+        android:background="#95959a"
+        >
+
+
+
+        <EditText
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/msg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85"
+            android:textColor="#000000"
+            android:background="#ACD2CD"
+            android:hint="Type text message"
+            android:textSize="18dp" />
+
+        <ImageButton
+            android:id="@+id/sendIt"
+            android:layout_marginRight="5dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.15"
+            android:src="@drawable/send" />
+
+    </LinearLayout>
+
+</LinearLayout>
