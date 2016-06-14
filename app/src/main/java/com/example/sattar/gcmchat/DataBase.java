@@ -21,7 +21,7 @@ public class DataBase  extends SQLiteOpenHelper  {
         public static final int database_version = 1;
 
         public String sql_query="create table messages (id integer primary key autoincrement, name varchar(20),  number varchar(20) not NULL , date_message varchar(15), time_message varchar(15), content text(50), type varchar(20));";
-
+          public String sql_query2="create table contacts ( name varchar(20),  number varchar(20) not NULL, status varchar(70));";
 
         public DataBase(Context context) {
             super(context, "messsages_operation",null, database_version);
@@ -38,6 +38,7 @@ public class DataBase  extends SQLiteOpenHelper  {
         public void onCreate(SQLiteDatabase db) {
             // TODO Auto-generated method stub
             db.execSQL(sql_query);
+            db.execSQL(sql_query2);
             Log.d("databse operation", "table is created");
 
         }
@@ -53,7 +54,52 @@ public class DataBase  extends SQLiteOpenHelper  {
 
 
 
-        public  void  insertionrow(DataBase ob,String name,String number, String date,String time, String content_msg , String typeofmsg ){
+    public  void  insertCommonContact(DataBase ob,String name,String number, String status){
+
+
+
+        SQLiteDatabase sq=ob.getWritableDatabase();
+        ContentValues cv=new ContentValues();
+
+        cv.put("name", name);
+        cv.put("number", number);
+        cv.put("status", status);
+
+        sq.insert("contacts", null, cv);
+
+        Log.d("database operation", "data is inserted");
+
+    }
+
+
+
+    public Cursor getWholeCommonContacts(DataBase object){
+
+        SQLiteDatabase SQ=object.getReadableDatabase();
+
+        String sql_query="select * from contacts";
+
+        Cursor cr = SQ.rawQuery(sql_query, null);
+
+
+        return cr;
+
+
+    }
+
+
+
+    public void deleteCommonContacts(DataBase obj){
+
+        SQLiteDatabase SQ=obj.getWritableDatabase();
+        SQ.execSQL("delete from contacts");
+
+
+    }
+
+
+
+    public  void  insertionrow(DataBase ob,String name,String number, String date,String time, String content_msg , String typeofmsg ){
 
             SQLiteDatabase sq=ob.getWritableDatabase();
             ContentValues cv=new ContentValues();
@@ -204,7 +250,7 @@ public class DataBase  extends SQLiteOpenHelper  {
         public static String getContactName(Context context,String phonenumber){
 
             Cursor cursor=null;
-
+            String contactname=null;
 
             try{
 
@@ -213,6 +259,23 @@ public class DataBase  extends SQLiteOpenHelper  {
                 Uri uri=Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phonenumber));
 
                 cursor=ctrsvr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME},null , null, null);
+
+                if(cursor.moveToFirst()){
+
+                    contactname=cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+
+                }else{
+                    Uri uri1=Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode("+91"+phonenumber));
+
+                    cursor=ctrsvr.query(uri1, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME},null , null, null);
+
+                    if(cursor.moveToFirst()) {
+
+                        contactname = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+                    }else{
+                        cursor=null;
+                    }
+                }
 
             }catch(Exception e){
 
@@ -224,17 +287,6 @@ public class DataBase  extends SQLiteOpenHelper  {
             if(cursor==null){
                 return null;
             }
-
-            String contactname=null;
-
-
-
-            if(cursor.moveToFirst()){
-
-                contactname=cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-
-            }
-
 
             if(cursor!=null&&!cursor.isClosed()){
 

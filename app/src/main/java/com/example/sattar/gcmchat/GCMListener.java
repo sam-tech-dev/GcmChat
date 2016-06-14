@@ -65,7 +65,7 @@ public class GCMListener  extends GcmListenerService {
 
         type="received";
 
-        new DataBase(getApplicationContext()).insertionrow(new DataBase(getApplicationContext()),name,number,dateString,timeString,message,type );
+        new DataBase(getApplicationContext()).insertionrow(new DataBase(getApplicationContext()),name,number,dateString,timeString,message,type);
 
 
        runOnUiThread(new Runnable() {

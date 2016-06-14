@@ -25,75 +25,42 @@ import java.net.URLEncoder;
 public class RegisterOnServer extends AppCompatActivity {
 
 
-    public EditText edmobile;
-    public Button btnRegister;
-    String mobileno;
     Context context;
     String parameters = null;
     String token=null;
-
+    final String serverUrl =ServerUrls.registerUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_on_server);
 
-        final String serverUrl =ServerUrls.registerUrl;
-
         context = this;
-
-
-
-        edmobile = (EditText) findViewById(R.id.mobile);
-        btnRegister = (Button) findViewById(R.id.registration);
 
         Intent intent=new Intent(this,registrationService.class);
         startService(intent);
-
-
         new GetToken().execute();
 
+            try {
+               parameters = "regId=" + URLEncoder.encode(token, "UTF-8");
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               mobileno  = edmobile.getText().toString().trim();
-
-
-try {
-   parameters = "regId=" + URLEncoder.encode(token, "UTF-8") + "&mobileno=" + URLEncoder.encode(mobileno, "UTF-8");
-
-}
+            }
                catch (UnsupportedEncodingException e){
                     Log.d("exception",e.getMessage());
                 }
                 new CustomAsyncTask().execute(serverUrl);
 
-                Intent intent=new Intent(RegisterOnServer.this,MainActivity.class);
-                 startActivity(intent);
-                finish();
-            }
-        });
 
     }
 
-
-
     class CustomAsyncTask extends AsyncTask<String, String, String> {
 
-        private ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
 
-            progressDialog = new ProgressDialog(RegisterOnServer.this);
-            progressDialog.setMessage("Registering...");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setProgress(1);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
 
         }
 
@@ -130,10 +97,6 @@ try {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
-
             if(result.equals("This number is already registered")){
                 Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
             }else{
@@ -143,15 +106,15 @@ try {
                    SharedPreferences sharedpreferences = context.getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
                     SharedPreferences.Editor edit = sharedpreferences.edit();
                     edit.putString("registerCheck","true");
-                    edit.putString("number",mobileno);
                     edit.commit();
+
+                    new UpdateCommonList(RegisterOnServer.this);
+
                 }else{
                     Toast.makeText(context, "error 404", Toast.LENGTH_SHORT).show();
                 }
 
             }
-
-
         }
 
 

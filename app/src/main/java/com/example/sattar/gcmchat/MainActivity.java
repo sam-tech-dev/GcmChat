@@ -53,27 +53,11 @@ public class MainActivity extends AppCompatActivity
 
     ViewPager mViewPager;
     TabLayout tabLayout;
-   static  ArrayList<ContactsWrapper> contactList, serverlist, commonList;
-    public static boolean Server, moContacts,complete;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Server=false;
-        moContacts=false;
-        complete=false;
-
-
-        new GetContacts().execute();
-        new totalRegistredClients().execute(ServerUrls.contactsUrl);
-        new CommonContacts().execute();
-        SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
-        if(sharedpreferences.contains("number")){
-            new getStatus().execute(ServerUrls.getstatusUrl);
-        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,6 +86,15 @@ public class MainActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(mViewPager);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
+        if(sharedpreferences.contains("number")) {
+            new UpdateCommonList(MainActivity.this);
+        }
     }
 
     private void setUpViewPager(ViewPager viewPager) {
@@ -160,16 +153,8 @@ public class MainActivity extends AppCompatActivity
 
 
         if (id == R.id.status) {
-
-            SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
-             if(sharedpreferences.contains("status")){
-
-                 String status=sharedpreferences.getString("status","");
-                 Toast.makeText(this,status,Toast.LENGTH_LONG).show();
-                // Intent intent =new Intent(MainActivity.this,RegisterOnServer.class);
-                // startActivity(intent);
-
-              }
+            Intent intent=new Intent(MainActivity.this,Status.class);
+            startActivity(intent);
 
         }
 
@@ -236,282 +221,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
-
-
-    class GetContacts extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            contactList = new ArrayList<ContactsWrapper>();
-
-            ContentResolver resolver = getContentResolver();
-            Cursor cursor=resolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
-            while(cursor.moveToNext()){
-
-                ContactsWrapper contactInstance=new ContactsWrapper();
-
-
-                String id= cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name=cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                Cursor phCursor=resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?", new String[]{id}, null);
-
-                String phNumber=null;
-
-                if(phCursor.moveToNext()) {
-                    phNumber = phCursor.getString(phCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    phNumber=phNumber.replaceAll("\\s+","");
-                 }
-
-                phCursor.close();
-                 if(phNumber!=null) {
-                     contactInstance.set_name(name);
-                     contactInstance.set_status("SatChat");
-                     contactInstance.set_numbers(phNumber);
-
-                     contactList.add(contactInstance);
-                 }
-            }
-            cursor.close();
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-              moContacts=true;
-        }
-    }
-
-
-
-
-    class totalRegistredClients extends AsyncTask<String, String, String> {
-
-        private ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            URL url = null;
-            try {
-                url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("Content-Language","en-US");
-                connection.setUseCaches(false);
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                StringBuilder sb = new StringBuilder();
-                String line = "";
-                while ((line = br.readLine()) != null){
-                    sb.append(line);
-                }
-
-                return sb.toString();
-
-            } catch (Exception e) {
-                return "E:" + e;
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-             serverlist=parseJSON(result);
-              Server=true;
-        }
-
-    }
-
-
-
-
-
-    class CommonContacts extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-               while(!(Server&&moContacts));
-
-            commonList=new ArrayList<ContactsWrapper>();
-
-            String number1,number;
-            Iterator iterator=contactList.iterator();
-            while(iterator.hasNext()){
-                ContactsWrapper contact=(ContactsWrapper)iterator.next();
-                 number=contact.get_numbers();
-                Iterator iterator1=serverlist.iterator();
-                while(iterator1.hasNext()){
-                    ContactsWrapper contact1=(ContactsWrapper)iterator1.next();
-                     number1=contact1.get_numbers();
-                       if(number.equals(number1)){
-
-                           ContactsWrapper cont=new ContactsWrapper();
-                            cont.set_name(contact.get_name());
-                            cont.set_numbers(contact.get_numbers());
-                            cont.set_status(contact1.get_status());
-                             commonList.add(cont);
-
-                       }
-
-                }
-
-            }
-
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            complete=true;
-
-            Iterator iterator=commonList.iterator();
-            /*
-            while(iterator.hasNext()){
-                ContactsWrapper contact=(ContactsWrapper)iterator.next();
-                String name=contact.get_name();
-                String number=contact.get_numbers();
-                String status=contact.get_status();
-                Log.d("azad","name : "+name+" number : "+number+" status : "+status);
-            }
-                  */
-        }
-    }
-
-
-
-
-    class getStatus extends AsyncTask<String, String, String> {
-
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String  parameters=null;
-            SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
-            String number = sharedpreferences.getString("number", "");
-
-            try {
-               parameters ="mobileno=" + URLEncoder.encode(number, "UTF-8");
-
-            }
-            catch (UnsupportedEncodingException e){
-                Log.d("exception",e.getMessage());
-            }
-            URL url = null;
-            try {
-                url = new URL(params[0]);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                connection.setRequestProperty("Content-Length",Integer.toString(parameters.getBytes().length));
-                connection.setRequestProperty("Content-Language","en-US");
-                connection.setUseCaches(false);
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                DataOutputStream rt = new DataOutputStream(connection.getOutputStream());
-                rt.write(parameters.getBytes());
-                rt.flush();
-                rt.close();
-
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                /*StringBuilder sb = new StringBuilder();
-                String line = "";
-                while ((line = br.readLine()) != null){
-                    sb.append(line);
-                }*/
-
-                return br.readLine();
-
-            } catch (Exception e) {
-                return "E:" + e;
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            Log.d("ruks",result);
-            SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = sharedpreferences.edit();
-            edit.putString("status", result);
-            edit.commit();
-
-
-        }
-
-    }
-
-
-
-
-
-
-    private ArrayList<ContactsWrapper> parseJSON(String response) {
-                ArrayList<ContactsWrapper>  list = new ArrayList<ContactsWrapper>();
-
-        try {
-            JSONArray jsonArray = new JSONArray(response);
-            for (int i=0;i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                ContactsWrapper contact = new ContactsWrapper();
-                contact.set_name("Sam");
-                contact.set_numbers(jsonObject.getString("mobileno"));
-                contact.set_status(jsonObject.getString("status"));
-
-                list.add(contact);
-            }
-        } catch (JSONException e) {
-
-        }
-
-        return list;
-    }
 
 
 }

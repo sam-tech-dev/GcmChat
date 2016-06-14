@@ -58,7 +58,9 @@
             android:name=".registrationService"
             android:exported="false" />
 
-        <activity android:name=".RegisterOnServer" />
+        <activity
+            android:name=".RegisterOnServer"
+            ></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
@@ -69,10 +71,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".IndividualChatDisp"
-            android:theme="@android:style/Theme.NoTitleBar"></activity>
-        <activity android:name=".ContactsAdapter"></activity>
+            android:theme="@android:style/Theme.NoTitleBar" />
+
+        <activity
+            android:name=".Status"></activity>
+
+        <activity android:name=".EditStatus">
+        </activity>
+
     </application>
 
 </manifest>

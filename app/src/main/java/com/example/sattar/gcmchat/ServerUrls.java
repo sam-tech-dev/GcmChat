@@ -7,9 +7,9 @@ import android.content.SharedPreferences;
  */
 public class ServerUrls {
 
-    public static final String registerUrl="http://192.168.1.123/gcmServer/registration.php";
-    public static final String senderUrl="http://192.168.1.123/gcmServer/getMessage.php";
-    public static final String contactsUrl="http://192.168.1.123/gcmServer/getRegisteredNumbers.php";
-    public static final String getstatusUrl="http://192.168.1.123/gcmServer/getStatus.php";
+    public static final String registerUrl="http://192.168.2.2/gcmServer/registration.php";
+    public static final String senderUrl="http://192.168.2.2/gcmServer/getMessage.php";
+    public static final String contactsUrl="http://192.168.2.2/gcmServer/getRegisteredNumbers.php";
+    public static final String updatestatusUrl="http://192.168.2.2/gcmServer/updateStatus.php";
 
 }

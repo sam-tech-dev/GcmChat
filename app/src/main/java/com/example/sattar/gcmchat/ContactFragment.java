@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.sql.Wrapper;
 import java.util.ArrayList;
@@ -28,7 +31,7 @@ import java.util.Iterator;
  */
 public class ContactFragment extends Fragment  implements RCVClickListener{
 
-     static ArrayList<ContactsWrapper> contactList;
+     static ArrayList<ContactsWrapper> contactList,dummyList;
      static  Context context;
     static RecyclerView recyclerView;
     static ContactsAdapter mAdapter;
@@ -44,7 +47,9 @@ public class ContactFragment extends Fragment  implements RCVClickListener{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context=getActivity();
+
     }
+
 
 
     @Override
@@ -56,7 +61,14 @@ public class ContactFragment extends Fragment  implements RCVClickListener{
         recyclerView = (RecyclerView) rootView.findViewById(R.id.contact_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-    new  waitforList().execute();
+        dummyList=getCommonContactList();
+        if(dummyList!=null){
+            setContactAdapter(dummyList);
+        }else{
+            Toast.makeText(context,"Loading",Toast.LENGTH_SHORT).show();
+        }
+
+
         return rootView;
     }
 
@@ -73,43 +85,63 @@ public class ContactFragment extends Fragment  implements RCVClickListener{
 
     @Override
     public void onRCVClick(View view, int position) {
-        Intent intent = new Intent(context , IndividualChatDisp.class);
 
-        intent.putExtra("monumber",contactList.get(position).get_numbers());
-        intent.putExtra("name",contactList.get(position).get_name());
+       // ContactFragment newFragment = new ContactFragment();
 
-        startActivity(intent);
+       // getActivity().getSupportFragmentManager().beginTransaction().add(R.id.container, new ContactFragment()).commit();
+
+        if(isAdded()){
+            Intent intent = new Intent(context, IndividualChatDisp.class);
+            intent.putExtra("monumber", contactList.get(position).get_numbers());
+            intent.putExtra("name", contactList.get(position).get_name());
+            startActivity(intent);
+        }
     }
 
 
-    class waitforList extends AsyncTask<Void, Void, Void> {
 
+    static  ArrayList<ContactsWrapper> getCommonContactList(){
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
+        DataBase object=  new DataBase(context);
 
-        @Override
-        protected Void doInBackground(Void... params) {
+        Cursor cursor = object.getWholeCommonContacts(object);
+        contactList=new ArrayList<ContactsWrapper>();
 
-            while(!MainActivity.complete);
+        if( cursor.moveToFirst()){
 
+            do{
+                ContactsWrapper indMsginstance=new ContactsWrapper();
+                indMsginstance.set_name(cursor.getString(0));
+                indMsginstance.set_numbers(cursor.getString(1));
+                indMsginstance.set_status(cursor.getString(2));
+
+                contactList.add(indMsginstance);
+
+            }while(cursor.moveToNext());
+
+            cursor.close();
+
+            return  contactList;
+        }else{
             return null;
         }
 
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            contactList=MainActivity.commonList;
-            setContactAdapter(contactList);
-
-        }
     }
 
+    static void updateContactList(){
 
+        try{
+            contactList.clear();
+            ArrayList<ContactsWrapper> newList=getCommonContactList();
+            new ContactFragment().setContactAdapter(contactList);
+            recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount()-1);
+
+        }catch(Exception e){
+
+            Toast.makeText(context, "error in update", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
 
 
 }

@@ -44,12 +44,13 @@ public class NewTalk {
 
 
         try {
-            parameters = "message=" + URLEncoder.encode(message, "UTF-8") + "&senderNo=" + URLEncoder.encode(sender, "UTF-8")+ "&receiverNo=" + URLEncoder.encode(receiver, "UTF-8");
+            parameters = "message="+ URLEncoder.encode(message, "UTF-8")+"&senderNo="+URLEncoder.encode(sender, "UTF-8")+"&receiverNo="+URLEncoder.encode(receiver, "UTF-8");
 
         }
         catch (UnsupportedEncodingException e){
             Log.d("exception",e.getMessage());
         }
+
         new sendingTask().execute(url);
 
         try{
@@ -147,13 +148,12 @@ public class NewTalk {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-
             if (progressDialog != null) {
                 progressDialog.dismiss();
             }
 
            // Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-            Log.d("sam", result);
+            Log.d("aza", result);
         }
 
 

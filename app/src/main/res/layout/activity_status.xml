@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context=".Status" >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:background="@color/colorPrimary"
+        >
+
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="42dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/back"
+            android:id="@+id/backbutton"
+            android:layout_marginLeft="10dp"
+            />
+
+        <TextView
+            android:id="@+id/indname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.80"
+            android:gravity="center"
+            android:text="Status"
+            android:textColor="#FFFFFF"
+            android:textSize="23dp" />
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight=".1"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/call"
+            android:id="@+id/phonecall"
+            />
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:layout_marginTop="15dp">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/head"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Current Status"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:textColor="#f36c19"
+                    android:layout_marginTop="10dp"/>
+
+      <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+       android:orientation="horizontal"
+          android:weightSum="1">
+                <TextView
+                    android:id="@+id/status"
+                    android:layout_width="0dp"
+                    android:layout_weight=".8"
+                    android:layout_height="wrap_content"
+                    android:text="Not yet updated"
+                    android:textSize="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="#65cca9" />
+
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_weight=".2"
+                android:layout_height="70dp"
+                android:src="@drawable/edit"
+                android:id="@+id/edit"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+               />
+           </LinearLayout>
+
+
+</LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+</LinearLayout>

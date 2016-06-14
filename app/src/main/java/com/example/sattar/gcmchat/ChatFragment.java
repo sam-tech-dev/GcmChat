@@ -42,6 +42,13 @@ public class ChatFragment extends Fragment implements RCVClickListener{
         context=getActivity();
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        context=getActivity();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,7 +113,6 @@ public class ChatFragment extends Fragment implements RCVClickListener{
                 //Toast.makeText(getApplicationContext(),csr.getString(2), Toast.LENGTH_LONG).show();
                 //Toast.makeText(getApplicationContext(),String.valueOf(noofSms), Toast.LENGTH_LONG).show();
 
-
             }while(crr.moveToNext());
 
             crr.close();
@@ -155,7 +161,6 @@ public class ChatFragment extends Fragment implements RCVClickListener{
             chatsList.clear();
 
             ArrayList<AllChatsWrapper> newList=makeChatsList();
-
            new ChatFragment().setChatsAdapter(chatsList);
             recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount()-1);
             // mAdapter.notifyDataSetChanged();
@@ -170,11 +175,11 @@ public class ChatFragment extends Fragment implements RCVClickListener{
 
     @Override
     public void onRCVClick(View view, int position) {
-        Intent intent = new Intent(context , IndividualChatDisp.class);
-
-        intent.putExtra("monumber",chatsList.get(position).get_number());
-        intent.putExtra("name",chatsList.get(position).get_name());
-
-        startActivity(intent);
+        if(isAdded()) {
+            Intent intent = new Intent(context, IndividualChatDisp.class);
+            intent.putExtra("monumber", chatsList.get(position).get_number());
+            intent.putExtra("name", chatsList.get(position).get_name());
+            startActivity(intent);
+        }
     }
 }
