@@ -252,7 +252,7 @@ public class UpdateCommonList {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            ContactFragment.updateContactList();
+            new ContactFragment().updateContactList();
         }
     }
 

@@ -2,6 +2,7 @@ package com.example.sattar.gcmchat;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -72,9 +73,16 @@ public class NewTalk {
             type="sent";
 
             new DataBase(context).insertionrow(new DataBase(context), name,receiver, dateString,timeString, message,type);
-            Toast.makeText(context, "sent SMS",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "sent SMS",Toast.LENGTH_SHORT).show();
 
+            SharedPreferences sharedpreferences = context.getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
+            if(!sharedpreferences.contains("chats")) {
+                SharedPreferences.Editor edit = sharedpreferences.edit();
+                edit.putString("chats", "true");
+                edit.commit();
+            }
             IndividualChatDisp.update();
+
 
             //  MainActivity.updateFrontList();
 

@@ -1,5 +1,8 @@
 package com.example.sattar.gcmchat;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -68,12 +71,27 @@ public class GCMListener  extends GcmListenerService {
         new DataBase(getApplicationContext()).insertionrow(new DataBase(getApplicationContext()),name,number,dateString,timeString,message,type);
 
 
+
+
        runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
                 IndividualChatDisp.update();
-                ChatFragment.updateFrontList();
+
+                SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
+                if(sharedpreferences.contains("chats")) {
+                    new  ChatFragment().updateFrontList();
+                }else{
+                    SharedPreferences.Editor edit = sharedpreferences.edit();
+                    edit.putString("chats", "true");
+                    edit.commit();
+
+                    Intent intent=new Intent(getApplicationContext(),MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
+
 
             }
         });

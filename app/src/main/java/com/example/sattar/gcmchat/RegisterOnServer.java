@@ -24,31 +24,38 @@ import java.net.URLEncoder;
 
 public class RegisterOnServer extends AppCompatActivity {
 
-
+    EditText mono;
+    Button regist;
     Context context;
     String parameters = null;
     String token=null;
     final String serverUrl =ServerUrls.registerUrl;
+    String number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_on_server);
-
+        mono=(EditText)findViewById(R.id.mobile);
+        regist=(Button)findViewById(R.id.registration);
         context = this;
 
         Intent intent=new Intent(this,registrationService.class);
         startService(intent);
-        new GetToken().execute();
 
-            try {
-               parameters = "regId=" + URLEncoder.encode(token, "UTF-8");
 
+        regist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                number=mono.getText().toString().trim();
+
+                new GetToken().execute();
+
+                Intent intent=new Intent(RegisterOnServer.this,MainActivity.class);
+                startActivity(intent);
             }
-               catch (UnsupportedEncodingException e){
-                    Log.d("exception",e.getMessage());
-                }
-                new CustomAsyncTask().execute(serverUrl);
+        });
 
 
     }
@@ -106,6 +113,8 @@ public class RegisterOnServer extends AppCompatActivity {
                    SharedPreferences sharedpreferences = context.getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
                     SharedPreferences.Editor edit = sharedpreferences.edit();
                     edit.putString("registerCheck","true");
+                    edit.putString("number",number);
+                    edit.putString("status","You are using SatChat!");
                     edit.commit();
 
                     new UpdateCommonList(RegisterOnServer.this);
@@ -166,6 +175,14 @@ public class RegisterOnServer extends AppCompatActivity {
                     progressDialog.dismiss();
                 }
 
+            try {
+                parameters = "regId=" + URLEncoder.encode(token, "UTF-8")+"&mobileno=" + URLEncoder.encode(number, "UTF-8");
+
+            }
+            catch (UnsupportedEncodingException e){
+                Log.d("exception",e.getMessage());
+            }
+            new CustomAsyncTask().execute(serverUrl);
         }
     }
 

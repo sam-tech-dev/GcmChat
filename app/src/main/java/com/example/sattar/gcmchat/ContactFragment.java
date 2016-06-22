@@ -90,12 +90,12 @@ public class ContactFragment extends Fragment  implements RCVClickListener{
 
        // getActivity().getSupportFragmentManager().beginTransaction().add(R.id.container, new ContactFragment()).commit();
 
-        if(isAdded()){
+        //if(isAdded()){
             Intent intent = new Intent(context, IndividualChatDisp.class);
             intent.putExtra("monumber", contactList.get(position).get_numbers());
             intent.putExtra("name", contactList.get(position).get_name());
             startActivity(intent);
-        }
+       // }
     }
 
 
@@ -128,12 +128,12 @@ public class ContactFragment extends Fragment  implements RCVClickListener{
 
     }
 
-    static void updateContactList(){
+     void updateContactList(){
 
         try{
             contactList.clear();
             ArrayList<ContactsWrapper> newList=getCommonContactList();
-            new ContactFragment().setContactAdapter(contactList);
+            setContactAdapter(contactList);
             recyclerView.scrollToPosition(recyclerView.getAdapter().getItemCount()-1);
 
         }catch(Exception e){

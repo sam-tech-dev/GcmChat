@@ -101,7 +101,13 @@ public class MainActivity extends AppCompatActivity
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        adapter.addFragment(new ChatFragment() , "CHATS");
+        SharedPreferences sharedpreferences = getSharedPreferences("MYPREFERENCES", Context.MODE_PRIVATE);
+        if(!sharedpreferences.contains("chats")) {
+            adapter.addFragment(new NoChatFragment() , "CHATS");
+        }else{
+            adapter.addFragment(new ChatFragment() , "CHATS");
+        }
+
         adapter.addFragment(new ContactFragment() , "CONTACTS");
         viewPager.setAdapter(adapter);
 

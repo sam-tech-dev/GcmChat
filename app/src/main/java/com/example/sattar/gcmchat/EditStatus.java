@@ -46,8 +46,6 @@ public class EditStatus extends AppCompatActivity {
             }
         });
 
-
-
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

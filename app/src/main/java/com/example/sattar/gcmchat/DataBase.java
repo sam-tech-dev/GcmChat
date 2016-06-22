@@ -242,7 +242,7 @@ public class DataBase  extends SQLiteOpenHelper  {
             // Toast.makeText(context,"in delete all method", Toast.LENGTH_LONG).show();
             SQ.execSQL("delete from messages where number='"+number+"'");
 
-            ChatFragment.updateFrontList();
+           new ChatFragment().updateFrontList();
 
         }
 
